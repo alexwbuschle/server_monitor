@@ -2,7 +2,7 @@ module ServerMonitor
   def self.cpu_usage
     proc0 = File.readlines('/proc/stat').grep(/^cpu /).first.split(' ')
     sleep 1
-    proc1 = File.readlines('/proc/stat').grep(/^cpu /).first.split(" ")
+    proc1 = File.readlines('/proc/stat').grep(/^cpu /).first.split(' ')
 
     proc0usagesum = (1..3).map { |i| proc0[i].to_i }.reduce(:+)
     proc1usagesum = (1..3).map { |i| proc1[i].to_i }.reduce(:+)
@@ -30,7 +30,13 @@ module ServerMonitor
     sum.round(2)
   end
 
-  def self.process_running
-    fail "Not implemented yet"
+  def self.running_processes
+    ps = `ps aux | awk '{print $11, $3, $4}' | sort -k2nr ` # Return Process name, cpu and memory usage
+    process = []
+    ps.each_line do |line|
+      line = line.chomp.split(' ')
+      process << [line[0].gsub(/[\[\]]/, ''), line[1].to_f, line.last.to_f]
+    end
+    process
   end
 end
