@@ -7,4 +7,10 @@ class ServerMonitorTest < Minitest::Test
     assert_equal Float, usage.class
     assert usage > 0
   end
+
+  def test_cpu_usage
+    usage = ServerMonitor.cpu_usage
+    assert_equal Float, usage.class
+    assert usage > 0.0
+  end
 end
